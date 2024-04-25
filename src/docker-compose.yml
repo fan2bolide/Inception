@@ -1,0 +1,14 @@
+networks:
+  internal:
+
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+  database:
+    build: ./database
+  wordpress:
+    depends_on:
+      - database
+    build: ./wordpress
