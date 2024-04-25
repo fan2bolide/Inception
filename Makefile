@@ -1,10 +1,10 @@
-DB_VOLUME=~/inception_volumes/mariadb
-WP_VOLUME=~/inception_volumes/wordpress
+DB_VOLUME=~/data/mariadb
+WP_VOLUME=~/data/wordpress
 
 
 all: $(DB_VOLUME) $(WP_VOLUME)
-	docker compose -f requirements/docker-compose.yml build
-	docker compose -f requirements/docker-compose.yml up
+	docker compose -f requirements/src/docker-compose.yml build
+	docker compose -f requirements/src/docker-compose.yml up
 
 $(DB_VOLUME):
 	mkdir -p $(DB_VOLUME)
