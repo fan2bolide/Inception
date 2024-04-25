@@ -1,0 +1,23 @@
+networks:
+  internal:
+
+services:
+  nginx:
+    build: ./requirements/nginx
+    ports:
+      - "443:443"
+    secrets:
+      - ssl_cert
+      - ssl_key
+  database:
+    build: ./requirements/database
+  wordpress:
+    depends_on:
+      - database
+    build: ./requirements/wordpress
+    
+secrets:
+  ssl_cert:
+    file: $SSLCRTPATH
+  ssl_key:
+    file: $SSLKEYPATH

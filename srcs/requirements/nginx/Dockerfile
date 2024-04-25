@@ -4,4 +4,8 @@ RUN apt-get update -y
 RUN apt-get upgrade -y
 RUN apt install nginx -y
 
-CMD ["nginx", "-g daemon off;"]
+COPY conf/nginx.conf /etc/nginx/nginx.conf
+
+CMD ["nginx"]
+
+EXPOSE 443
