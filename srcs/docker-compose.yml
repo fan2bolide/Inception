@@ -11,13 +11,31 @@ services:
       - ssl_key
   database:
     build: ./requirements/database
+    volumes:
+      - database_vol:/var/lib/mysql
   wordpress:
     depends_on:
       - database
     build: ./requirements/wordpress
+    volumes:
+      - wordpress_vol:/var/lib/wp
     
 secrets:
   ssl_cert:
     file: $SSLCRTPATH
   ssl_key:
     file: $SSLKEYPATH
+
+volumes:
+  database_vol:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/home/bajeanno/data/mariadb'
+  wordpress_vol:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/home/bajeanno/data/wordpress'
