@@ -1,25 +1,63 @@
+name: inception
+
 networks:
   internal:
 
 services:
   nginx:
+    networks:
+      - internal
+    volumes:
+      - wordpress_vol:/var/www/wordpress
     build: ./requirements/nginx
     ports:
       - "443:443"
     secrets:
       - ssl_cert
       - ssl_key
+    depends_on:
+      - wordpress
+    restart: on-failure
+
   database:
-    build: ./requirements/database
+    networks:
+      - internal
+    build:
+      context: ./requirements/database
+      dockerfile: Dockerfile
+      args:
+        - MYSQL_ROOT_PASSWORD
+        - MYSQL_DATABASE
+        - MYSQL_USER
+        - MYSQL_PASSWORD
     volumes:
       - database_vol:/var/lib/mysql
+    restart: on-failure
+
   wordpress:
+    networks:
+      - internal
     depends_on:
       - database
     build: ./requirements/wordpress
     volumes:
-      - wordpress_vol:/var/lib/wp
-    
+      - wordpress_vol:/var/www/wordpress
+    environment:
+      MYSQL_HOST: $MYSQL_HOST
+      MYSQL_PORT: $MYSQL_PORT
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+      MYSQL_DATABASE: $MYSQL_DATABASE
+
+      WP_ADMIN_NAME: $WP_ADMIN_NAME
+      WP_ADMIN_PASSWORD: $WP_ADMIN_PASSWORD
+      WP_ADMIN_MAIL: $WP_ADMIN_MAIL
+
+      WP_USER_NAME: $WP_USER_NAME
+      WP_USER_PASSWORD: $WP_USER_PASSWORD
+      WP_USER_MAIL: $WP_USER_MAIL
+    restart: on-failure
+
 secrets:
   ssl_cert:
     file: $SSLCRTPATH
@@ -30,12 +68,12 @@ volumes:
   database_vol:
     driver: local
     driver_opts:
-      type: 'none'
-      o: 'bind'
+      type: none
+      o: bind
       device: '/home/bajeanno/data/mariadb'
   wordpress_vol:
     driver: local
     driver_opts:
-      type: 'none'
-      o: 'bind'
+      type: none
+      o: bind
       device: '/home/bajeanno/data/wordpress'

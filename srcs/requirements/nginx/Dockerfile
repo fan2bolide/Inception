@@ -7,5 +7,3 @@ RUN apt install nginx -y
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 
 CMD ["nginx"]
-
-EXPOSE 443

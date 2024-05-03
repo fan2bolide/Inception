@@ -1,15 +1,26 @@
 FROM debian:bullseye
 
-RUN apt-get update -y
-RUN apt-get upgrade -y
-RUN apt-get install --no-install-recommends -y mariadb-server
-RUN mkdir -p /run/mysqld
-RUN chown -R mysql:mysql /run/mysqld
-# 
-# COPY tools/entrypoint.sh /usr/local/bin/
-# RUN chmod +x /usr/local/bin/entrypoint.sh
-#
-# ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+ARG MYSQL_ROOT_PASSWORD
+ARG MYSQL_DATABASE
+ARG MYSQL_USER
+ARG MYSQL_PASSWORD
 
-CMD ["mariadbd", "--bind-address=0.0.0.0"]
+WORKDIR /var/lib/mysql
 
+RUN apt-get update && apt-get install mariadb-server curl -y \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+
+RUN service mariadb start \
+    && mysql -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$MYSQL_ROOT_PASSWORD'); \
+                 DROP USER IF EXISTS ''@'$hostname'; \
+                 DROP DATABASE IF EXISTS test; \
+                 CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE; \
+                 GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD'; \
+                 FLUSH PRIVILEGES;" \
+    && mysqladmin -u root -p$MYSQL_ROOT_PASSWORD shutdown
+
+EXPOSE 3306
+
+ENTRYPOINT [ "mysqld_safe" ]
