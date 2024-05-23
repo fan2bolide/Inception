@@ -37,5 +37,6 @@ fi
 echo 5 >& 2
 chown -R www-data:www-data /var/www/wordpress
 chown -R www-data:www-data /run/php
+chown -R www-data:www-data /var/www/html/wp-content
 
 php-fpm7.4 -F

@@ -7,8 +7,8 @@ ARG MYSQL_PASSWORD
 
 WORKDIR /var/lib/mysql
 
-RUN apt-get update && apt-get install mariadb-server curl -y \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install mariadb-server -y
+RUN apt-get install curl -y
 
 COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 
