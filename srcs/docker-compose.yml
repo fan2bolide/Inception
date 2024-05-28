@@ -25,14 +25,16 @@ services:
     build:
       context: ./requirements/database
       dockerfile: Dockerfile
-      args:
-        - MYSQL_ROOT_PASSWORD
-        - MYSQL_DATABASE
-        - MYSQL_USER
-        - MYSQL_PASSWORD
-    volumes:
+    environment:
+      - MYSQL_DATABASE
+      - MYSQL_USER
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_PASSWORD
       - database_vol:/var/lib/mysql
     restart: on-failure
+    secrets:
+      - db_passwd
+      - db_root_passwd
 
   wordpress:
     networks:
@@ -42,6 +44,8 @@ services:
     build: ./requirements/wordpress
     volumes:
       - wordpress_vol:/var/www/wordpress
+    secrets:
+      - db_passwd
     environment:
       MYSQL_HOST: $MYSQL_HOST
       MYSQL_PORT: $MYSQL_PORT
@@ -63,6 +67,10 @@ secrets:
     file: $SSLCRTPATH
   ssl_key:
     file: $SSLKEYPATH
+  db_passwd:
+    file: $MYSQL_PASSWORD_PATH
+  db_root_passwd:
+    file: $MYSQL_ROOT_PASSWORD_PATH
 
 volumes:
   database_vol:

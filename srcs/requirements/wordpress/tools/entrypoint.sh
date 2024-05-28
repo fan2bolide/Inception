@@ -3,6 +3,8 @@ echo -1 >& 2
 
 echo 0 >& 2
 
+export MYSQL_PWD=`$MYSQL_PASSWORD`
+
 if [ ! -f "/var/www/wordpress/wp-config.php" ]; then
     echo 1 >& 2
     wp core download --allow-root \
@@ -14,7 +16,7 @@ if [ ! -f "/var/www/wordpress/wp-config.php" ]; then
     wp config create --allow-root \
                      --dbhost=$MYSQL_HOST:$MYSQL_PORT \
                      --dbuser=$MYSQL_USER \
-                     --dbpass=$MYSQL_PASSWORD \
+                     --dbpass=$MYSQL_PWD \
                      --dbname=$MYSQL_DATABASE \
                      --path=/var/www/wordpress || exit 2
 
@@ -39,4 +41,4 @@ chown -R www-data:www-data /var/www/wordpress
 chown -R www-data:www-data /run/php
 chown -R www-data:www-data /var/www/html/wp-content
 
-php-fpm7.4 -F
+exec "$@"

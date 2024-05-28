@@ -4,7 +4,7 @@ WP_VOLUME=/home/bajeanno/data/wordpress/
 .PHONY: all
 all: secrets
 	$(MAKE) create_volumes
-	docker compose -f srcs/docker-compose.yml up --build --detach
+	docker compose -f srcs/docker-compose.yml up --build
 
 .PHONY: re
 re:
@@ -27,11 +27,13 @@ clean_volumes:
 secrets:
 	mkdir -p $@
 	openssl req -x509 -newkey rsa:4096 -keyout secrets/key.pem -out secrets/cert.pem -sha256 -days 3650 -nodes -subj "/CN=bajeanno.42.fr"
+	openssl rand -base64 15 > secrets/db_passwd.txt
+	openssl rand -base64 15 > secrets/db_root_passwd.txt
 
 .PHONY: create_volumes
 create_volumes:
-	mkdir -p $(DB_VOLUME)
-	mkdir -p $(WP_VOLUME)
+	sudo mkdir -p $(DB_VOLUME)
+	sudo mkdir -p $(WP_VOLUME)
 
 .PHONY: logs
 logs:
