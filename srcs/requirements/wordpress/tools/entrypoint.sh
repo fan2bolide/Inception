@@ -23,7 +23,7 @@ if [ ! -f "/var/www/wordpress/wp-config.php" ]; then
     echo 3 >& 2
 
     wp core install --allow-root \
-                    --admin_password="$WP_ADMIN_PASSWORD" \
+                    --admin_password="`$WP_ADMIN_PASSWORD`" \
                     --admin_user="$WP_ADMIN_NAME" \
                     --admin_email="$WP_ADMIN_MAIL" \
                     --title="Inception" \

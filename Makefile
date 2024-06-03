@@ -29,6 +29,7 @@ secrets:
 	openssl req -x509 -newkey rsa:4096 -keyout secrets/key.pem -out secrets/cert.pem -sha256 -days 3650 -nodes -subj "/CN=bajeanno.42.fr"
 	openssl rand -base64 15 > secrets/db_passwd.txt
 	openssl rand -base64 15 > secrets/db_root_passwd.txt
+	openssl rand -base64 15 > secrets/wp_admin_passwd.txt
 
 .PHONY: create_volumes
 create_volumes:
