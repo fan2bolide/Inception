@@ -5,10 +5,13 @@ echo 0 >& 2
 
 export MYSQL_PWD=`$MYSQL_PASSWORD`
 
+chown -R www-data:www-data /var/www/wordpress
+chown -R www-data:www-data /var/www/wordpress/wp-content
+chown -R www-data:www-data /run/php
+
 if [ ! -f "/var/www/wordpress/wp-config.php" ]; then
     echo 1 >& 2
-    wp core download --allow-root \
-                     --path=/var/www/wordpress || exit 1
+    wp core download --allow-root --path=/var/www/wordpress || exit 1
 
     echo 2 >& 2
     sleep 10
@@ -16,7 +19,7 @@ if [ ! -f "/var/www/wordpress/wp-config.php" ]; then
     wp config create --allow-root \
                      --dbhost=$MYSQL_HOST:$MYSQL_PORT \
                      --dbuser=$MYSQL_USER \
-                     --dbpass=$MYSQL_PWD \
+                     --dbpass=`$MYSQL_PASSWORD` \
                      --dbname=$MYSQL_DATABASE \
                      --path=/var/www/wordpress || exit 2
 
@@ -37,8 +40,5 @@ if [ ! -f "/var/www/wordpress/wp-config.php" ]; then
                                                --path=/var/www/wordpress || exit 4
 fi
 echo 5 >& 2
-chown -R www-data:www-data /var/www/wordpress
-chown -R www-data:www-data /run/php
-chown -R www-data:www-data /var/www/html/wp-content
 
 exec "$@"

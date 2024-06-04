@@ -82,10 +82,10 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: '/home/bajeanno/data/mariadb'
+      device: "/Users/basil/data/mariadb"
   wordpress_vol:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: '/home/bajeanno/data/wordpress'
+      device: "/Users/basil/data/wordpress"

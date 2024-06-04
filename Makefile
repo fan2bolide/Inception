@@ -1,10 +1,10 @@
-DB_VOLUME=/home/bajeanno/data/mariadb/
-WP_VOLUME=/home/bajeanno/data/wordpress/
+DB_VOLUME=$(HOME)/data/mariadb/
+WP_VOLUME=$(HOME)/data/wordpress/
 
 .PHONY: all
 all: secrets
 	$(MAKE) create_volumes
-	docker compose -f srcs/docker-compose.yml up --build
+	docker compose -v -f srcs/docker-compose.yml up --build
 
 .PHONY: re
 re:
@@ -34,7 +34,9 @@ secrets:
 .PHONY: create_volumes
 create_volumes:
 	sudo mkdir -p $(DB_VOLUME)
+	sudo chown -R $(USER) $(DB_VOLUME)
 	sudo mkdir -p $(WP_VOLUME)
+	sudo chown -R $(USER) $(WP_VOLUME)
 
 .PHONY: logs
 logs:
