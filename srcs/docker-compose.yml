@@ -30,6 +30,7 @@ services:
       - MYSQL_USER
       - MYSQL_ROOT_PASSWORD
       - MYSQL_PASSWORD
+    volumes:
       - database_vol:/var/lib/mysql
     restart: on-failure
     secrets:
